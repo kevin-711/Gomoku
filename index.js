@@ -31,6 +31,8 @@ io.on('connection', (socket) => {
 
         console.log(`User with id ${socket.id} joined a session ${session_id}`)
 
+        temp_db[session_id]['player_black'] = 1
+
         io.to(`${session_id}`).emit('join session', temp_db[session_id])
 
     })
@@ -39,14 +41,22 @@ io.on('connection', (socket) => {
 
         console.log("recieved data")
 
+        temp_db[game_data.session_id] = game_data
+
         check_winner(game_data)
 
-        io.to(`${game_data['session_id']}`).emit('submit', game_data)
+        io.to(`${temp_db[game_data.session_id]['session_id']}`).emit('submit', temp_db[game_data.session_id])
+
+    })
+
+    socket.on('leave', (session_id) => {
+
+        socket.leave(session_id)
 
     })
 
     socket.on('disconnect', () => {
-        // I dunno, this is run when a user disconnects (ie closes the tab)
+
     })
 
 })
@@ -54,7 +64,7 @@ io.on('connection', (socket) => {
 app.get('/valid_id/:id', (req, res) => {
     id = req.params.id
 
-    if (id in temp_db) {
+    if (id in temp_db && temp_db[id]['player_black'] != 1) {
         res.send(true)
     } else {
         res.send(false)

@@ -6,7 +6,8 @@ const submit_move = document.getElementById('submit-move')
 const turn_ind = document.getElementById('turn-ind')
 const id_disp = document.getElementById('id')
 const home_btn = document.getElementById('home')
-const rematch_btn = document.getElementById('rematch')
+// const rematch_btn = document.getElementById('rematch')
+const game_end = document.getElementById('game-end')
 
 const home_screen = document.getElementById('home-screen')
 const game_screen = document.getElementById('game-screen')
@@ -20,13 +21,14 @@ join.addEventListener('click', () => join_game())
 newgame.addEventListener('click', () => create_new_game())
 submit_move.addEventListener('click', () => submit())
 home_btn.addEventListener('click', () => home())
-rematch_btn.addEventListener('click', () => rematch())
+// rematch_btn.addEventListener('click', () => rematch())
 
 function create_new_game() {
 
     turn_data['user_colour'] = 1
 
     const session_id = gen_session_id()
+    const player_id = gen_session_id()
     console.log(`Session created with id ${session_id}`)
     
     let board = []
@@ -39,7 +41,9 @@ function create_new_game() {
         board: board,
         turn: -1,
         session_id: session_id,
-        winner: 0
+        winner: 0,
+        player_black: 0,
+        player_white: 1
     }
     
     socket.emit('create session', game_data)
@@ -53,10 +57,11 @@ async function join_game() {
     
     turn_data['user_colour'] = -1
     session_id = join_input.value
+    join_input.value = ''
 
     // Checks if session exists or not
     if (session_id == '') {
-        console.log("Invalid Session Id, Please Try Again")
+        alert("Invalid Game ID, Please Try Again")
         return
     }
 
@@ -74,11 +79,9 @@ async function join_game() {
             initialize_game()
         })
     } else {
-        console.log("Invalid Session Id, Please Try Again")
+        alert("Invalid Game ID, Please Try Again")
         return
-        // Show something on front-end ig, popup text
     }   
-
 }
 
 function submit() {
@@ -107,9 +110,13 @@ socket.on('submit', (data) => {
     
     if (game_data['winner'] == turn_data['user_colour']) {
         turn_ind.textContent = "You Won!"
+        game_end.classList.remove('hidden')
+        submit_move.classList.add('hidden')
         return
     } else if (game_data['winner'] != 0) {
         turn_ind.textContent = "Defeat"
+        game_end.classList.remove('hidden')
+        submit_move.classList.add('hidden')
         return
     }
 
@@ -125,12 +132,10 @@ function home() {
 
     home_screen.classList.remove("hidden")
     game_screen.classList.add("hidden")
+    game_end.classList.add('hidden')
+    submit_move.classList.remove('hidden')
 
-}
-
-function rematch() {
-
-    
+    socket.emit('leave session', game_data['session_id'])
 
 }
 
