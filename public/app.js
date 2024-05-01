@@ -3,37 +3,28 @@ const join_input = document.getElementById('join-id')
 const newgame = document.getElementById('new-game-btn')
 const board = document.getElementById('board')
 const submit_move = document.getElementById('submit-move')
+const turn_ind = document.getElementById('turn-ind')
+const id_disp = document.getElementById('id')
+const home_btn = document.getElementById('home')
+const rematch_btn = document.getElementById('rematch')
 
 const home_screen = document.getElementById('home-screen')
 const game_screen = document.getElementById('game-screen')
 
 const socket = io();
 
-let user_colour
 let game_data
 let turn_data = {placed_tile: false}
-
-const temp = document.getElementById('temp')
-temp.addEventListener('click', () => {
-
-    if (home_screen.classList.contains("hidden")) {
-        home_screen.classList.remove("hidden")
-        game_screen.classList.add("hidden")
-    } else {
-        home_screen.classList.add("hidden")
-        game_screen.classList.remove("hidden")
-    }
-
-})
 
 join.addEventListener('click', () => join_game())
 newgame.addEventListener('click', () => create_new_game())
 submit_move.addEventListener('click', () => submit())
+home_btn.addEventListener('click', () => home())
+rematch_btn.addEventListener('click', () => rematch())
 
 function create_new_game() {
 
-    user_colour = 1
-    // Merge this into turn_data
+    turn_data['user_colour'] = 1
 
     const session_id = gen_session_id()
     console.log(`Session created with id ${session_id}`)
@@ -47,18 +38,20 @@ function create_new_game() {
     game_data = {
         board: board,
         turn: -1,
-        session_id: session_id
+        session_id: session_id,
+        winner: 0
     }
     
     socket.emit('create session', game_data)
 
+    turn_ind.textContent = "Opponent's Turn"
     initialize_game(game_data)
 
 }
 
 async function join_game() {
     
-    user_colour = -1
+    turn_data['user_colour'] = -1
     session_id = join_input.value
 
     // Checks if session exists or not
@@ -77,6 +70,7 @@ async function join_game() {
             
             game_data = data
             console.log(game_data)
+            turn_ind.textContent = "Your Turn"
             initialize_game()
         })
     } else {
@@ -100,24 +94,52 @@ function submit() {
         turn_data['placed_tile'] = false
 
         socket.emit('submit', game_data)
-        console.log("Move has been submitted")
+        // console.log("Move has been submitted")
     }
 
 }
 
 socket.on('submit', (data) => {
     
-    console.log("Data recieved")
-
     game_data = data
-
+    
     redisplay_pieces()
+    
+    if (game_data['winner'] == turn_data['user_colour']) {
+        turn_ind.textContent = "You Won!"
+        return
+    } else if (game_data['winner'] != 0) {
+        turn_ind.textContent = "Defeat"
+        return
+    }
+
+    if (game_data['turn'] == turn_data['user_colour']) {
+        turn_ind.textContent = "Your Turn"
+    } else {
+        turn_ind.textContent = "Opponent's Turn"
+    }
+
 })
+
+function home() {
+
+    home_screen.classList.remove("hidden")
+    game_screen.classList.add("hidden")
+
+}
+
+function rematch() {
+
+    
+
+}
 
 function initialize_game() {
 
     home_screen.classList.add("hidden")
     game_screen.classList.remove("hidden")
+
+    id_disp.textContent = `Game ID: ${game_data['session_id']}`
 
     board.innerHTML = ''
     console.log("Loading Board...")
@@ -146,8 +168,9 @@ function tile_clicked(e) {
     const clicked_tile = e.target
     const row = clicked_tile.dataset.row
     const col = clicked_tile.dataset.column
+    const user_colour = turn_data['user_colour']
 
-    console.log("Row:", row, "Column:", col)
+    // console.log("Row:", row, "Column:", col)
     // const tile = document.getElementById(`${clicked_tile.dataset.row}-${clicked_tile.dataset.column}`)
 
     if (game_data.turn != user_colour || game_data.board[row - 1][col - 1] != 0) {
@@ -155,7 +178,6 @@ function tile_clicked(e) {
     } else {
 
         game_data.board[row - 1][col - 1] = user_colour
-        
         place_tile(row, col, user_colour)
 
         if (turn_data['placed_tile'] == true) {
@@ -189,28 +211,24 @@ function place_tile(row, column, col) {
 
     const tile = document.getElementById(`${row}-${column}`)
 
-    // Replace with actual pieces later
     if (col == -1) {
-        tile.classList.add('bg-black')
-        // tile.classList.add('tile-black bg-black')
+        tile.classList.add('tile-black')
+        tile.classList.add('bg-contain')
     } else {
-        tile.classList.add('bg-white')
-        // tile.classList.add('tile-white bg-white')
+        tile.classList.add('tile-white')
+        tile.classList.add('bg-contain')
     }
 }
 
 function remove_title(row, column, col) {
     
     const tile = document.getElementById(`${row}-${column}`)
-
     game_data.board[row - 1][column - 1] = 0
-
+    
     if (col == '-1') {
-        tile.classList.remove('bg-black')
-        // tile.classList.add('tile-black bg-black')
+        tile.classList.remove('tile-black')
     } else {
-        tile.classList.remove('bg-white')
-        // tile.classList.add('tile-white bg-white')
+        tile.classList.remove('tile-white')
     }
 }
 

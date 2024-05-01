@@ -6,48 +6,52 @@
     <title>Gomoku</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-200 font-mono">
+<body class="bg-[#4b3a70] font-mono text-[#FEFAE0]">
     
-    <div class="bg-zinc-400 flex items-center justify-center h-20">
-        <h1 class="content-center text-2xl">Gomoku</h1>
+    <div class="bg-[#322f42] flex items-center justify-center border-b-2 border-[#b7a2c9] h-20">
+        <h1 class="content-center text-5xl">Gomoku</h1>
     </div>
     
     <div id="home-screen" class="flex flex-col items-center justify-center h-auto">
         <h1 class="mt-6 justify-items-center items-center">Enter Game ID to Join</h1>
 
         <div class="mt-6 flex max-w-md gap-x-4">
-            <input id="join-id" class="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="Game ID">
-            <button id="join-btn" class="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Join Game</button>
+            <input id="join-id" autocomplete="off" class="min-w-0 flex-auto rounded-md border-0 bg-[#FEFAE0] text-[#212531] px-3.5 py-2 shadow-sm ring-1 ring-offset-0 ring-inset ring-[#212531] focus:ring-2 focus:ring-inset focus:ring-[#212531] sm:text-sm sm:leading-6" placeholder="Game ID">
+            <button id="join-btn" class="flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Join Game</button>
           </div>
 
         <h1 class="mt-6 justify-items-center items-center">Or Create a New Session</h1>
 
-        <button id="new-game-btn" class="mt-6 flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Create New Game</button>
+        <button id="new-game-btn" class="mt-6 flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Create New Game</button>
 
     </div>
 
     <div class="flex items-center justify-center">
-        <div id="game-screen" class="grid game-rows game-cols h-auto mt-10 gap-4 hidden">
+        <div id="game-screen" class="grid game-rows game-cols h-auto mt-6 gap-4 hidden">
     
-            <h1 class="col-start-2 col-end-3 justify-self-center self-center row-start-1 row-end-2">Who's Turn is it</h1>
+            <h1 id='turn-ind' class="col-start-2 col-end-3 justify-self-center self-center row-start-1 row-end-2 text-xl"></h1>
     
-            <div id="player" class="col-start-1 col-end-2 row-start-2 row-end-3 justify-self-center">
+            <!-- <div id="player" class="col-start-1 col-end-2 row-start-2 row-end-3 justify-self-center">
                 Player 1 info
-            </div>
+            </div> -->
     
-            <div id="opponent" class="col-start-3 col-end-4 row-start-2 row-end-3 justify-self-center">
+            <!-- <div id="opponent" class="col-start-3 col-end-4 row-start-2 row-end-3 justify-self-center">
                 Player 2 info
-            </div>
+            </div> -->
+            <h1 id="id" class="col-start-1 col-end-1 row-start-1 row-end-1 self-center text-base">Game ID: </h1>
             
-            <button id="submit-move" class="mt-6 col-start-2 col-end-3 row-start-3 row-end-4 justify-self-center self-center rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Submit Move</button>
+            <button id="submit-move" class="mt-6 col-start-2 col-end-3 row-start-3 row-end-4 justify-self-center self-center rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Submit Move</button>
+            
+            <div id='game-end' class="flex col-start-2 col-end-3 row-start-3 row-end-4 justify-center content-center gap-4 hidden">
+                <button id="home" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Home</button>
+                <button id="rematch" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Rematch (0/2)</button>
+            </div>
 
-            <div id="board" class="grid grid-cols-15 grid-rows-15 col-start-2 col-end-3 row-start-2 row-end-3 items-center justify-items-center board-background bg-contain h-auto">
+            <div id="board" class="grid grid-cols-15 grid-rows-15 col-start-2 col-end-3 row-start-2 row-end-3 items-center justify-items-center board-background bg-contain border-8 border-[#b7a2c9] h-auto">
             </div>
     
         </div>
     </div>
-
-    <button id="temp">Temp button</button>
 
     <script src="/socket.io/socket.io.js"></script> 
     <script src="app.js"></script>

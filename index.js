@@ -39,8 +39,14 @@ io.on('connection', (socket) => {
 
         console.log("recieved data")
 
+        check_winner(game_data)
+
         io.to(`${game_data['session_id']}`).emit('submit', game_data)
 
+    })
+
+    socket.on('disconnect', () => {
+        // I dunno, this is run when a user disconnects (ie closes the tab)
     })
 
 })
@@ -55,5 +61,49 @@ app.get('/valid_id/:id', (req, res) => {
     }
 });
 
+function check_winner(game_data) {
 
+    const board = game_data['board']
 
+    for (let i = 0; i < 15; i++) {
+        for (let j = 0; j < 15; j++) {
+
+            if (board[i][j] != 0) {
+
+                const col = board[i][j]
+                const right = check_right(board, i, j + 1, col)
+                const diag = check_diag(board, i + 1, j + 1, col)
+                const down = check_down(board, i + 1, j, col)
+
+                if (right >= 5 || diag >= 5 || down >= 5) {
+                    console.log(`Winner found: ${col}`)
+                    game_data['winner'] = col
+                }
+            }
+        }
+    }
+}
+
+function check_right(board, i, j, col) {
+    let res = 0
+    if (i < 15 && j < 15 && board[i][j] == col) {
+        res = check_right(board, i, j + 1, col)
+    }
+    return res + 1
+}
+
+function check_diag(board, i, j, col) {
+    let res = 0
+    if (i < 15 && j < 15 && board[i][j] == col) {
+        res = check_diag(board, i + 1, j + 1, col)
+    }
+    return res + 1
+}
+
+function check_down(board, i, j, col) {
+    let res = 0
+    if (i < 15 && j < 15 && board[i][j] == col) {
+        res = check_down(board, i + 1, j, col)
+    }
+    return res + 1
+}

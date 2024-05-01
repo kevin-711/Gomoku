@@ -15,17 +15,17 @@
 }
 
 .game-cols {
-    grid-template-columns: 15vw 70vh 15vw;
+    grid-template-columns: 20vw 70vh 20vw;
 }
 
 .board-background {
-    background-image: url("/assets/board.png");
+    background-image: url('/assets/board.png');
 }
 
 .tile-black {
-    background-image: url();
+    background-image: url('/assets/black.png');
 }
 
 .tile-white {
-    background-image: url();
+    background-image: url('/assets/white.png');
 }
