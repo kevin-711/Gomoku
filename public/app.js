@@ -6,8 +6,9 @@ const submit_move = document.getElementById('submit-move')
 const turn_ind = document.getElementById('turn-ind')
 const id_disp = document.getElementById('id')
 const home_btn = document.getElementById('home')
-// const rematch_btn = document.getElementById('rematch')
+const rematch_btn = document.getElementById('rematch')
 const game_end = document.getElementById('game-end')
+const instr = document.getElementById('instr')
 
 const home_screen = document.getElementById('home-screen')
 const game_screen = document.getElementById('game-screen')
@@ -21,43 +22,29 @@ join.addEventListener('click', () => join_game())
 newgame.addEventListener('click', () => create_new_game())
 submit_move.addEventListener('click', () => submit())
 home_btn.addEventListener('click', () => home())
-// rematch_btn.addEventListener('click', () => rematch())
+rematch_btn.addEventListener('click', () => rematch())
 
 function create_new_game() {
 
-    turn_data['user_colour'] = 1
-
     const session_id = gen_session_id()
-    const player_id = gen_session_id()
+    // const player_id = gen_session_id()
     console.log(`Session created with id ${session_id}`)
     
-    let board = []
-    for (let i = 0; i < 15; i++) {
-        board.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-    }
-
-    // We are setting 0 as no piece, 1 as white piece, -1 as black piece
-    game_data = {
-        board: board,
-        turn: -1,
-        session_id: session_id,
-        winner: 0,
-        player_black: 0,
-        player_white: 1
-    }
+    initialize_data(session_id, 1)
     
     socket.emit('create session', game_data)
-
+    
     turn_ind.textContent = "Opponent's Turn"
     initialize_game(game_data)
-
+    
 }
 
 async function join_game() {
     
-    turn_data['user_colour'] = -1
     session_id = join_input.value
     join_input.value = ''
+
+    initialize_data(session_id, -1)
 
     // Checks if session exists or not
     if (session_id == '') {
@@ -78,6 +65,7 @@ async function join_game() {
             turn_ind.textContent = "Your Turn"
             initialize_game()
         })
+
     } else {
         alert("Invalid Game ID, Please Try Again")
         return
@@ -139,6 +127,41 @@ function home() {
 
 }
 
+function rematch() {
+
+    game_data['rematch'] += 1
+
+    socket.emit('rematch', game_data)
+    
+}
+
+socket.on('rematch', (data) => {
+
+    console.log("Rematch request recieved from socket")
+    console.log(data)
+
+    game_data = data
+
+    if (game_data['rematch'] == 1) {
+        rematch_btn.textContent = 'Rematch (1/2)'
+    } else if (game_data['rematch'] > 1) {
+
+        console.log("Initiating Rematch")
+
+        initialize_data(game_data['session_id'])
+
+        socket.emit('submit', game_data)
+        
+        console.log(game_data)
+        console.log(turn_data)
+
+        
+        game_end.classList.add('hidden')
+        submit_move.classList.remove('hidden')
+    }
+
+})
+
 function initialize_game() {
 
     home_screen.classList.add("hidden")
@@ -166,6 +189,32 @@ function initialize_game() {
 
     redisplay_pieces()
     
+}
+
+function initialize_data(session_id, col) {
+
+    // Creating a blank board
+    let board = []
+    for (let i = 0; i < 15; i++) {
+        board.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+    }
+    // We are setting 0 as no piece, 1 as white piece, -1 as black piece
+    game_data = {
+        board: board,
+        turn: -1,
+        session_id: session_id,
+        winner: 0,
+        player_black: 0,
+        player_white: 1,
+        rematch: 0
+    }
+
+    turn_data = {
+        placed_tile: false,
+        prev_col: "",
+        prev_row: "",
+        user_colour: col
+    }
 }
 
 function tile_clicked(e) {

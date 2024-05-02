@@ -7,6 +7,8 @@ const server = http.createServer(app);
 const io = new Server(server); 
 
 const port = 3000
+// For Deployment
+// server.listen(process.env.PORT, process.env.IP, () => {console.log("Server is Running...")})
 server.listen(port, () => {console.log("Server is Running...")})
 app.use(express.static('public'))
 app.use(express.json({limit: '1mb'}))
@@ -46,6 +48,16 @@ io.on('connection', (socket) => {
         check_winner(game_data)
 
         io.to(`${temp_db[game_data.session_id]['session_id']}`).emit('submit', temp_db[game_data.session_id])
+
+    })
+
+    socket.on('rematch', (game_data) => {
+
+        console.log("Rematch request submitted")
+
+        temp_db[game_data.session_id] = game_data
+
+        io.to(`${temp_db[game_data.session_id]['session_id']}`).emit('rematch', temp_db[game_data.session_id])
 
     })
 
