@@ -1,1 +1,1 @@
-read me sample
+# Gomoku
