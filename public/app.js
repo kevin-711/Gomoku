@@ -10,6 +10,7 @@ const rematch_btn = document.getElementById('rematch')
 const game_end = document.getElementById('game-end')
 const instr = document.getElementById('instr')
 const copy_msg = document.getElementById('copy-msg')
+const invalid_msg = document.getElementById('invalid-msg')
 
 const home_screen = document.getElementById('home-screen')
 const game_screen = document.getElementById('game-screen')
@@ -28,7 +29,6 @@ rematch_btn.addEventListener('click', () => rematch())
 function create_new_game() {
 
     const session_id = gen_session_id()
-    // const player_id = gen_session_id()
     console.log(`Session created with id ${session_id}`)
     
     initialize_data(session_id, 1)
@@ -49,7 +49,12 @@ async function join_game() {
 
     // Checks if session exists or not
     if (session_id == '') {
-        alert("Invalid Game ID, Please Try Again")
+        invalid_msg.classList.remove('out-of-frame')
+
+        setInterval(() => {
+            invalid_msg.classList.add('out-of-frame')
+        }, 3000);
+
         return
     }
 
@@ -68,7 +73,12 @@ async function join_game() {
         })
 
     } else {
-        alert("Invalid Game ID, Please Try Again")
+        invalid_msg.classList.remove('out-of-frame')
+
+        setInterval(() => {
+            invalid_msg.classList.add('out-of-frame')
+        }, 3000);
+
         return
     }   
 }

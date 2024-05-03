@@ -31,6 +31,10 @@
             <h2 class="mt-4">Players alternate turns placing a stone of their color on an empty intersection. <br> The winner is the first player to form an unbroken line of five stones of their color either horizontally, vertically, or diagonally.</h2>
         </div>
 
+        <div id="invalid-msg" class="bg-[#FEFAE0] border-t border-b border-[#322f42] text-blue-700 px-4 py-3 absolute left-5 bottom-5 out-of-frame transition-all">
+            <p class="text-sm">Invalid game ID, please try again</p>
+        </div>
+
     </div>
 
     <div class="flex items-center justify-center">
@@ -49,7 +53,7 @@
             
             <div id="copy-msg" class="bg-[#FEFAE0] border-t border-b border-[#322f42] text-blue-700 px-4 py-3 absolute left-5 bottom-5 out-of-frame transition-all">
                 <p class="text-sm">Game ID copied to clipboard</p>
-              </div>
+            </div>
 
             <button id="submit-move" class="mt-6 col-start-2 col-end-3 row-start-3 row-end-4 justify-self-center self-center rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Submit Move</button>
             
