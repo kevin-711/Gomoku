@@ -6,7 +6,7 @@
     <title>Gomoku</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#4b3a70] font-mono text-[#FEFAE0]">
+<body class="bg-[#4b3a70] font-mono text-[#FEFAE0] overflow-hidden">
     
     <div class="bg-[#322f42] flex justify-center items-center border-b-2 border-[#b7a2c9] h-20">
         <!-- <h1 id="instructions"class="left-4 absolute text-lg">How to play?</h1> -->
@@ -19,12 +19,12 @@
 
         <div class="mt-6 flex max-w-md gap-x-4">
             <input id="join-id" autocomplete="off" class="min-w-0 flex-auto rounded-md border-0 bg-[#FEFAE0] text-[#212531] px-3.5 py-2 shadow-sm ring-1 ring-offset-0 ring-inset ring-[#212531] focus:ring-2 focus:ring-inset focus:ring-[#212531] sm:text-sm sm:leading-6" placeholder="Game ID">
-            <button id="join-btn" class="flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Join Game</button>
+            <button id="join-btn" class="flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Join Game</button>
           </div>
 
         <h1 class="mt-6 justify-items-center items-center">Or Create a New Session</h1>
 
-        <button id="new-game-btn" class="mt-6 flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Create New Game</button>
+        <button id="new-game-btn" class="mt-6 flex-none rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Create New Game</button>
         
         <div class="mt-16 flex flex-col justify-items-center items-center border-2 border-inherit p-6 w-1/4">
             <h1 class="text-lg underline underline-offset-4 justify-self-center">How to play</h1>
@@ -47,11 +47,15 @@
             </div> -->
             <h1 id="id" class="col-start-1 col-end-1 row-start-1 row-end-1 self-center text-base">Game ID: </h1>
             
-            <button id="submit-move" class="mt-6 col-start-2 col-end-3 row-start-3 row-end-4 justify-self-center self-center rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Submit Move</button>
+            <div id="copy-msg" class="bg-[#FEFAE0] border-t border-b border-[#322f42] text-blue-700 px-4 py-3 absolute left-5 bottom-5 out-of-frame transition-all">
+                <p class="text-sm">Game ID copied to clipboard</p>
+              </div>
+
+            <button id="submit-move" class="mt-6 col-start-2 col-end-3 row-start-3 row-end-4 justify-self-center self-center rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Submit Move</button>
             
             <div id='game-end' class="flex col-start-2 col-end-3 row-start-3 row-end-4 justify-center content-center gap-4 hidden">
-                <button id="home" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Home</button>
-                <button id="rematch" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Rematch (0/2)</button>
+                <button id="home" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Home</button>
+                <button id="rematch" class="mt-4 self-start rounded-md bg-[#b7a2c9] px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c5c3c4]">Rematch (0/2)</button>
             </div>
 
             <div id="board" class="grid grid-cols-15 grid-rows-15 col-start-2 col-end-3 row-start-2 row-end-3 items-center justify-items-center board-background bg-contain border-8 border-[#b7a2c9] h-auto">

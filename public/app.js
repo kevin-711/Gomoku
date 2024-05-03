@@ -9,6 +9,7 @@ const home_btn = document.getElementById('home')
 const rematch_btn = document.getElementById('rematch')
 const game_end = document.getElementById('game-end')
 const instr = document.getElementById('instr')
+const copy_msg = document.getElementById('copy-msg')
 
 const home_screen = document.getElementById('home-screen')
 const game_screen = document.getElementById('game-screen')
@@ -35,7 +36,7 @@ function create_new_game() {
     socket.emit('create session', game_data)
     
     turn_ind.textContent = "Opponent's Turn"
-    initialize_game(game_data)
+    initialize_game()
     
 }
 
@@ -130,7 +131,6 @@ function home() {
 function rematch() {
 
     game_data['rematch'] += 1
-
     socket.emit('rematch', game_data)
     
 }
@@ -148,14 +148,13 @@ socket.on('rematch', (data) => {
 
         console.log("Initiating Rematch")
 
-        initialize_data(game_data['session_id'])
+        initialize_data(game_data['session_id'], turn_data['user_colour'])
 
         socket.emit('submit', game_data)
-        
-        console.log(game_data)
-        console.log(turn_data)
 
+        initialize_game()
         
+        rematch_btn.textContent = 'Rematch (0/2)'
         game_end.classList.add('hidden')
         submit_move.classList.remove('hidden')
     }
@@ -168,6 +167,7 @@ function initialize_game() {
     game_screen.classList.remove("hidden")
 
     id_disp.textContent = `Game ID: ${game_data['session_id']}`
+    id_disp.addEventListener('click', () => copy_id())
 
     board.innerHTML = ''
     console.log("Loading Board...")
@@ -198,7 +198,8 @@ function initialize_data(session_id, col) {
     for (let i = 0; i < 15; i++) {
         board.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
     }
-    // We are setting 0 as no piece, 1 as white piece, -1 as black piece
+    // We are setting 0 as no piece, 1 as white piece, -1 as black piece for board
+    // Following similar indicators for turn and winner
     game_data = {
         board: board,
         turn: -1,
@@ -224,13 +225,10 @@ function tile_clicked(e) {
     const col = clicked_tile.dataset.column
     const user_colour = turn_data['user_colour']
 
-    // console.log("Row:", row, "Column:", col)
-    // const tile = document.getElementById(`${clicked_tile.dataset.row}-${clicked_tile.dataset.column}`)
-
+    // Check if tile is valid for placement
     if (game_data.turn != user_colour || game_data.board[row - 1][col - 1] != 0) {
         return
     } else {
-
         game_data.board[row - 1][col - 1] = user_colour
         place_tile(row, col, user_colour)
 
@@ -239,10 +237,10 @@ function tile_clicked(e) {
             remove_title(turn_data['prev_row'], turn_data['prev_col'], user_colour)
         }
 
+        // Update turn data
         turn_data['placed_tile'] = true
         turn_data["prev_row"] = row
         turn_data["prev_col"] = col
-
     }
 
 }
@@ -284,6 +282,22 @@ function remove_title(row, column, col) {
     } else {
         tile.classList.remove('tile-white')
     }
+}
+
+// Copying session id and managing popups
+async function copy_id() {
+    try {
+        await navigator.clipboard.writeText(game_data['session_id']);
+        console.log("Copied")
+    } catch (err) {
+        console.error('Error in copying text: ', err);
+    }
+
+    copy_msg.classList.remove('out-of-frame')
+
+    setInterval(() => {
+        copy_msg.classList.add('out-of-frame')
+    }, 3000);
 }
 
 function gen_session_id() {
