@@ -15,8 +15,8 @@ const client = new MongoClient(url);
 
 const port = 3000
 // For Deployment
-// server.listen(process.env.PORT, process.env.IP, () => {console.log("Server is Running...")})
-server.listen(port, () => {console.log("Server is Running...")})
+server.listen(process.env.PORT, process.env.IP, () => {console.log("Server is Running...")})
+// server.listen(port, () => {console.log("Server is Running...")})
 app.use(express.static('public'))
 app.use(express.json({limit: '1mb'}))
 

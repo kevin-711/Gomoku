@@ -141,8 +141,10 @@ function home() {
 function rematch() {
 
     game_data['rematch'] += 1
-    socket.emit('rematch', game_data)
     
+    rematch_btn.disabled = true
+
+    socket.emit('rematch', game_data)
 }
 
 socket.on('rematch', (data) => {
@@ -178,6 +180,8 @@ function initialize_game() {
 
     id_disp.textContent = `Game ID: ${game_data['session_id']}`
     id_disp.addEventListener('click', () => copy_id())
+
+    rematch_btn.disabled = false
 
     board.innerHTML = ''
     console.log("Loading Board...")
@@ -299,16 +303,18 @@ async function copy_id() {
     try {
         await navigator.clipboard.writeText(game_data['session_id']);
         console.log("Copied")
+        
+        copy_msg.classList.remove('out-of-frame')
+
+        setInterval(() => {
+            copy_msg.classList.add('out-of-frame')
+        }, 3000)
+        
     } catch (err) {
         console.error('Error in copying text: ', err);
     }
-
-    copy_msg.classList.remove('out-of-frame')
-
-    setInterval(() => {
-        copy_msg.classList.add('out-of-frame')
-    }, 3000);
 }
+    
 
 function gen_session_id() {
     const length = 5
