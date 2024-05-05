@@ -98,7 +98,6 @@ function submit() {
         socket.emit('submit', game_data)
         // console.log("Move has been submitted")
     }
-
 }
 
 socket.on('submit', (data) => {
